@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Category: {{ current_category.title }}{% endblock %}
+
+{% block content %}
+    <h1>Category: {{ current_category.title }}</h1>
+    {% for item in items %}
+        <div>
+            <h2>{{ item.title }}</h2>
+            <p>{{ item.description }}</p>
+            <p>Price: ${{ item.price }}</p>
+            {% if item.discount_price %}
+                <p>Discount Price: ${{ item.discount_price }}</p>
+            {% endif %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+        </div>
+    {% endfor %}
+{% endblock %}

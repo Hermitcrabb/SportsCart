@@ -29,5 +29,5 @@ urlpatterns = [
     path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('product_list/', views.ProductListView.as_view(), name='product_list'),
-    path('category/<slug>/', CategoryView.as_view(), name='category'),
+    path('category/<slug:category>/', CategoryView.as_view(), name='category'),
 ]
