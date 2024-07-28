@@ -569,26 +569,21 @@ def initkhalti(request):
     amount = request.POST.get('amount')
     purchase_order_id = request.POST.get('purchase_order_id')
 
-
-    print("url",url)
-    print("return_url",return_url)
-    print("web_url",website_url)
-    print("amount",amount)
-    print("purchase_order_id",purchase_order_id)
     payload = json.dumps({
         "return_url": return_url,
-        "website_url": "http://127.0.0.1:8000",
+        "website_url": website_url,
         "amount": amount,
-        "purchase_order_id": purchase_order_id,
+        "purchase_order_id": 1,
         "purchase_order_name": "test",
         "customer_info": {
-        "name":"pratham",
-        "email": "",
-        "phone": ""
+        "name": "abcd",
+        "email": "test@khalti.com",
+        "phone": "9800000001"
         }
     })
+
     headers = {
-        'Authorization': 'key 75ab6e2e855545ca9ed58500cea9624f',
+        'Authorization': 'key 05bf95cc57244045b8df5fad06748dab',
         'Content-Type': 'application/json',
     }
 
@@ -597,15 +592,16 @@ def initkhalti(request):
 
     print(response.text)
     new_res = json.loads(response.text)
-    # print(new_res['payment_url'])
+    print(new_res['payment_url'])
     print(type(new_res))
     return redirect(new_res['payment_url'])
 
 def verifyKhalti(request):
+    print("Aaa")
     url = "https://a.khalti.com/api/v2/epayment/lookup/"
     if request.method == 'GET':
         headers = {
-            'Authorization': 'key 75ab6e2e855545ca9ed58500cea9624f',
+            'Authorization': 'key 05bf95cc57244045b8df5fad06748dab',
             'Content-Type': 'application/json',
         }
         pidx = request.GET.get('pidx')
@@ -621,17 +617,15 @@ def verifyKhalti(request):
         
 
         if new_res['status'] == 'Completed':
-            user = request.user
-            # user.has_verified_dairy = True
-            user.save()
-            pass
+            return render(request, 'success.html')
         
-        #else:
-            
-            
 
-        return redirect('core:home')
+        return render(request, 'success.html')
+    return render(request, 'success.html')
     
+    
+
+            
 def my_logout_view(request):
     if request.method == 'POST':
         auth_logout(request)

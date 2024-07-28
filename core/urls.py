@@ -28,7 +28,7 @@ urlpatterns = [
     
 
     #khalti
-    path('initiate/<slug>',views.initkhalti,name="initiate"),
-    path('verify/<slug>',views.verifyKhalti,name="verify"),
+    path('initiate',views.initkhalti,name="initiate"),
+    path('verify',views.verifyKhalti,name="verify"),
 
 ]
