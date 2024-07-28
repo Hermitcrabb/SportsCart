@@ -15,7 +15,8 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
 from django.http import JsonResponse
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import logout
+from django.urls import reverse
 
 
 
@@ -632,11 +633,12 @@ def verifyKhalti(request):
 
         return redirect('core:home')
     
-def my_logout_view(request):
-    if request.method == 'POST':
-        auth_logout(request)
-        # Add debug prints to check session status
-        print("Session keys after logout: ", request.session.keys())
-        return redirect(settings.LOGOUT_REDIRECT_URL)
-    return render(request, 'registration/logout.html')
+def logout_user(request):
+        logout(request)
+     
+        messages.add_message(request,messages.SUCCESS,
+                                 f'Successfully logged out')
+        
+       
+        return redirect(reverse('login'))
 

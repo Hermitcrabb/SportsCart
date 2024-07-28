@@ -10,7 +10,7 @@
       <div class="row">
         <form action="{% url 'core:initiate' %}" method="POST">
           {% csrf_token %}
-          <input type="hidden" name="purchase_order_id" value="{{slug}}"  id="slug">
+          <input type="hidden" name="purchase_order_id" value="{{id}}"  id="id">
           <input type="hidden" name="amount" value="1000" id="amt">
           <input type="hidden" name="return_url" value="http://127.0.0.1:8000/payment/verify">
           <input type="submit" value="Pay With Khalti" name="" id="">

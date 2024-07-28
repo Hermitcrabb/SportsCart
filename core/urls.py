@@ -7,6 +7,7 @@ from .views import (
     PaymentView,
     AddCouponView,
     RequestRefundView,
+    logout_user
     
 )
 
@@ -25,7 +26,7 @@ urlpatterns = [
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('product_list/', views.ProductListView.as_view(), name='product_list'),
     path('category/<slug:category>/', CategoryView.as_view(), name='category'),
-    
+    path("logout_user",logout_user, name='logout_user'),
 
     #khalti
     path('initiate/<slug>',views.initkhalti,name="initiate"),

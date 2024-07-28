@@ -114,3 +114,5 @@ SESSION_COOKIE_DOMAIN = None
 
 # Name of the session cookie
 SESSION_COOKIE_NAME = 'sessionid'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
