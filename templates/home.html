@@ -27,7 +27,7 @@
               </a>
             </li>
             {% for category in categories %}
-            <li><a href="{% url 'core:category' category.1 %}">{{ category.1 }}</a></li>
+            <li><a href="{% url 'core:category' category.0 %}">{{ category.1 }}</a></li>
             {% endfor %}
 
           </ul>
@@ -36,7 +36,7 @@
           <form action="{% url 'core:product_list' %}" method="get">
             <div class="md-form my-0">
               {% csrf_token %}
-              <input class="form-control mr-sm-2" type="text"  name='q' placeholder="Search Blog" aria-label="Search">
+              <input class="form-control mr-sm-2" type="text"  name='q' id ='search' placeholder="Search" aria-label="Search">
               
             </div>
           </form>

@@ -1,12 +1,7 @@
 from django.urls import path
 from .import views
 from .views import (
-    CategoryView,
-    ItemDetailView,
-    CheckoutView,
-    HomeView,
-    OrderSummaryView,
-    add_to_cart,
+    CategoryView,ItemDetailView,CheckoutView,HomeView,OrderSummaryView,add_to_cart,
     remove_from_cart,
     remove_single_item_from_cart,
     PaymentView,
@@ -30,4 +25,10 @@ urlpatterns = [
     path('request-refund/', RequestRefundView.as_view(), name='request-refund'),
     path('product_list/', views.ProductListView.as_view(), name='product_list'),
     path('category/<slug:category>/', CategoryView.as_view(), name='category'),
+    
+
+    #khalti
+    path('initiate/<slug>',views.initkhalti,name="initiate"),
+    path('verify/<slug>',views.verifyKhalti,name="verify"),
+
 ]

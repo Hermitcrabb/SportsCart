@@ -1,5 +1,10 @@
 import os
 from decouple import config
+import environ
+
+
+env = environ.Env()
+environ.Env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -81,7 +86,31 @@ AUTHENTICATION_BACKENDS = (
 )
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # CRISPY FORMS
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Default is database
+
+# Set session cookie age (in seconds)
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+
+# Ensure sessions expire at browser close
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Ensure session cookies are secure (HTTPS)
+SESSION_COOKIE_SECURE = True
+
+# Use HTTPOnly flag on session cookies
+SESSION_COOKIE_HTTPONLY = True
+
+# Path of the session cookie
+SESSION_COOKIE_PATH = '/'
+
+# Domain for the session cookie
+SESSION_COOKIE_DOMAIN = None
+
+# Name of the session cookie
+SESSION_COOKIE_NAME = 'sessionid'

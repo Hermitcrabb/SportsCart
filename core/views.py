@@ -1,5 +1,7 @@
 import random
 import string
+import json
+import requests
 
 from django.db.models.query import QuerySet
 import khalti # type: ignore
@@ -12,11 +14,28 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
+from django.http import JsonResponse
+from django.contrib.auth import logout as auth_logout
+
+
+
 
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
 
+
+
+
+
 khalti.api_key = settings.KHALTI_SECRET_KEY
+
+
+
+CATEGORY_MAP = {
+    'Jersey': 'J',
+    'Sport Wear': 'SW',
+    'Outwear': 'OW',
+}
 
 
 def create_ref_code():
@@ -35,13 +54,16 @@ class CategoryView(ListView):
     context_object_name = "items"
 
     def get_queryset(self):
-        category_slug = self.kwargs.get('category')  # Use 'category' from URL params
-        category = get_object_or_404(Item, slug=category_slug)  # Assuming 'slug' is the field to filter
-        return Item.objects.filter(category=category)
+        category_name = self.kwargs.get('category_name')
+        category_abbr = CATEGORY_MAP.get(category_name)
+        if category_abbr:
+            return Item.objects.filter(category=category_abbr)
+        else:
+            return Item.objects.none() 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['current_category'] = get_object_or_404(Item, slug=self.kwargs['category'])  # Assuming 'slug' is the field to filter
+        context['category_name'] = self.kwargs.get('category_name')
         return context
 
 class ProductListView(ListView):
@@ -535,3 +557,86 @@ class RequestRefundView(View):
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
                 return redirect("core:request-refund")
+
+def home(request):
+    id = Item.slug()
+    return render(request,'core/home.html',{'uuid':id})
+
+def initkhalti(request):
+    url = "https://a.khalti.com/api/v2/epayment/initiate/"
+    return_url = request.POST.get('return_url')
+    website_url = request.POST.get('return_url')
+    amount = request.POST.get('amount')
+    purchase_order_id = request.POST.get('purchase_order_id')
+
+
+    print("url",url)
+    print("return_url",return_url)
+    print("web_url",website_url)
+    print("amount",amount)
+    print("purchase_order_id",purchase_order_id)
+    payload = json.dumps({
+        "return_url": return_url,
+        "website_url": "http://127.0.0.1:8000",
+        "amount": amount,
+        "purchase_order_id": purchase_order_id,
+        "purchase_order_name": "test",
+        "customer_info": {
+        "name":"pratham",
+        "email": "",
+        "phone": ""
+        }
+    })
+    headers = {
+        'Authorization': 'key 75ab6e2e855545ca9ed58500cea9624f',
+        'Content-Type': 'application/json',
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(json.loads(response.text))
+
+    print(response.text)
+    new_res = json.loads(response.text)
+    # print(new_res['payment_url'])
+    print(type(new_res))
+    return redirect(new_res['payment_url'])
+
+def verifyKhalti(request):
+    url = "https://a.khalti.com/api/v2/epayment/lookup/"
+    if request.method == 'GET':
+        headers = {
+            'Authorization': 'key 75ab6e2e855545ca9ed58500cea9624f',
+            'Content-Type': 'application/json',
+        }
+        pidx = request.GET.get('pidx')
+        data = json.dumps({
+            'pidx':pidx
+        })
+        res = requests.request('POST',url,headers=headers,data=data)
+        print(res)
+        print(res.text)
+
+        new_res = json.loads(res.text)
+        print(new_res)
+        
+
+        if new_res['status'] == 'Completed':
+            user = request.user
+            # user.has_verified_dairy = True
+            user.save()
+            pass
+        
+        #else:
+            
+            
+
+        return redirect('core:home')
+    
+def my_logout_view(request):
+    if request.method == 'POST':
+        auth_logout(request)
+        # Add debug prints to check session status
+        print("Session keys after logout: ", request.session.keys())
+        return redirect(settings.LOGOUT_REDIRECT_URL)
+    return render(request, 'registration/logout.html')
+

@@ -2,8 +2,8 @@ from django import forms
 
 
 PAYMENT_CHOICES = (
-    ('K', 'KHALTI'),
-    ('COD','Cash on delivery')
+    ('',''),
+    ('K','KHALTI')
     
 )
 
